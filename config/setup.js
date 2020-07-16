@@ -1,16 +1,17 @@
 'use strict';
 
-const config = require('config');
+const dbHandler = require('./db-connections');
 
 const setup = async () => {
-	let testValue = config.get('test');
-
-	return await new Promise((resolve) =>
-		setTimeout(() => {
-			console.log('Bruh');
-			resolve(testValue);
-		}, 1000)
-	);
+	try {
+		await Promise.all(dbHandler.getConnectionsArray());
+		dbHandler.getConnectionsNames().forEach((value) => {
+			console.info(`[Info][DB] Successfully connected to ${value}`);
+		});
+	} catch (err) {
+		console.error(err);
+		process.exit(1);
+	}
 };
 
 module.exports = setup;
